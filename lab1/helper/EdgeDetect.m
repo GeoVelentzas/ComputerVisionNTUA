@@ -1,46 +1,33 @@
 function  D  = EdgeDetect( Im,sig,theta_edge,LaplacType )
-%Συναρτηση που ανιχνευει τις ακμες της εικονας Im μετα απο γκαουσιανο
-%φιλτραρισμα τυπικης αποκλισης sig και παραμετρο κατωφλιου theta_edge.
-%Με το ορισμα που αντιστοιχει στην Laplac_type μπορει να επιτευχθει ειτε
-%γραμμικη λαπλασιανη με την τιμη μηδεν ειτε μη γραμμικη προσεγγιση με
-%οποιαδηποτε αλλη τιμη
+% functin which finds the edges of the images Im after gaussian filtering
+% with standard deviation sig, and threshold parameter theta_edge.
+% Using LaplacType=0 results in linear apprach while a non-zero value
+% results in using a non-linear approach
 
-%****************************** 1.2.1*************************************% 
-hsize = ceil(3*sig)*2+1;                  %υπολογισμος του μηκους πυρηνα
-Gs = fspecial('gaussian', hsize, sig);    %κρουστικη αποκριση γκαουσιανης
+hsize = ceil(3*sig)*2+1;                  %computation of kernel length
+Gs = fspecial('gaussian', hsize, sig);    %impulse response of gaussian
 h = fspecial('log', hsize, sig);          %Laplacian of Gaussian
-%*************************************************************************%
-
-%*******************************1.2.2*************************************%
-Is = imfilter(Im,Gs);                      %φιλτραρισμα με γκαουσιανο πυρηνα
-SE = strel('diamond', 1);                  %δημιουργια μορφολογικου πυρηνα
+Is = imfilter(Im,Gs);                     %filtered with Gaussian kernel
+SE = strel('diamond', 1);                 %morhological operator
 
 if LaplacType==0
-    L1 = imfilter(Im,h);                   %γραμμικο φιτραρισμα
+    L1 = imfilter(Im,h);                  %linear filtering
 else
-    Idil = imdilate(Is,SE);                %μη γραμμικο φιλτραρισμα
+    Idil = imdilate(Is,SE);               %non-linear filtering
     Iero = imerode(Is,SE);
     L1 = Idil + Iero - 2*Is;
 end
-%*************************************************************************%
 
-%******************************1.2.3**************************************%
-X=(L1>=0);                              %δημιουργια δυαδικης εικονας
-Xdil = imdilate(X,SE);                  %dilation
-Xero = imerode(X,SE);                   %erosion
-Y = Xdil-Xero;                          %ευρεση περιγράμματος
-%*************************************************************************%
+X=(L1>=0);                                %binary image
+Xdil = imdilate(X,SE);                    %dilation
+Xero = imerode(X,SE);                     %erosion
+Y = Xdil-Xero;                            %find the perigram
 
-
-%******************************1.2.4**************************************%
-[Gx,Gy]=gradient(Is);                   %υπολογισμος της κλισης 
-G=Gx+Gy*1i;                             %τεχνασμα για υπολογισμο του μετρου
-max_grad=max(abs(G(:)));                %υπολογισμος της μεγιστης κλισης
-Z = (abs(G)) > (theta_edge*max_grad);   %υπολογισμος της μιας συνθηκης
-D=(Z&Y);                                %υπολογισμος του πινακα ακμων
-%*************************************************************************%
-
-% imshow(D);                              %εμφανιση της τελικης εικονας
+[Gx,Gy]=gradient(Is);                     %gradient computation
+G=Gx+Gy*1i;                               %for computing norm...
+max_grad=max(abs(G(:)));                  %maximum gradient
+Z = (abs(G)) > (theta_edge*max_grad);     %condition
+D=(Z&Y);                                  %computation of edge matrix
 
 end
 
