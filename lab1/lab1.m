@@ -5,7 +5,7 @@ addpath(genpath('./'));
 %% ********************* PART 1 EDGE DETECTION ****************************
 
 % ********* chose either J10 or J20 for different noise levels ************ 
-I=imread('edgetest_11.png');        %read the image
+I=imread('edgetest_11.png');        %read the image (try edgetest_13.png)
 I=double(I)/255;                    %normalize values from 0 to 1
 Imax=max(I(:));                     %compute the maximum value
 Imin=min(I(:));                     %compute the minimum value
@@ -66,7 +66,7 @@ pause(1.0); clear; clc;
 
 
 %************************** initial image ********************************%
-I = imread('blox.png');                   %read image
+I = imread('blox.png');                   %read image (try conrers_13.png)
 I = double(I);                            %convert to double
 %*************************************************************************%
 
