@@ -5,4 +5,6 @@ lab1 : Edge and Corner Detection
 
 lab2 : Analysis, Segmentation and Classification of texture
 
-lab3: Optical Flow estimation with Lucas-Kanade
+lab3 : Optical Flow estimation with Lucas-Kanade
+
+lab4 : Segmentation of Biomedical Images with Reconstruction Filters and Watershed Methods
